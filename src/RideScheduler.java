@@ -8,7 +8,7 @@ public class RideScheduler {
 	Calendar date;
 	
 	public RideScheduler(Calendar date) {
-		//Get Rides from Database based on Date
+		
 	}
 	
 	public void schedule(Member m){

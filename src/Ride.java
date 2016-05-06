@@ -8,9 +8,10 @@ public class Ride {
 	String startLocation;
 	Driver driver;
 	ArrayList<String> passengers;
-	String[] stops;
+	ArrayList<String> stops;
+	RideState state;
 	
-	public Ride(Calendar date, int startTime, String startLocation, Driver driver, ArrayList passengers, String[] stops){
+	public Ride(Calendar date, int startTime, String startLocation, Driver driver, ArrayList<String> passengers, ArrayList<String> stops){
 		this.date = date;
 		this.startTime = startTime;
 		this.startLocation = startLocation;
@@ -48,18 +49,17 @@ public class Ride {
 	}
 
 	public boolean addPassenger(Member m) {
-		if (passengers.size() >= driver.getVehicle().getCapacity()){
-			return false;
+		if (passengers.size() < driver.getVehicle().getCapacity() && !passengers.contains(m.getMemberID())){
+			passengers.add(m.getMemberID());
+			return true;
 		}
-		else{
-			passengers.add(m.getEmail());
-		}
-		return true;
+
+		return false;
 	}
 	
 	public boolean removePassenger(Member m) {
 		for (int i = 0; i < passengers.size(); i++) {
-			if (passengers.get(i).equals(m.getEmail())) {
+			if (passengers.get(i).equals(m.getMemberID())) {
 				passengers.remove(i);
 				return true;
 			}
@@ -67,12 +67,24 @@ public class Ride {
 		return false;
 	}
 
-	public String[] getStops() {
+	public ArrayList<String> getStops() {
 		return stops;
 	}
 
-	public void setStops(String[] stops) {
-		this.stops = stops;
+	public void addStop(String stop) {
+		stops.add(stop);
+	}
+	
+	public void removeStop(String stop) {
+		stops.remove(stop);
+	}
+	
+	public RideState getRideState() {
+		return state;
+	}
+	
+	public void setRideState(RideState state) {
+		this.state = state;
 	}
 	
 }

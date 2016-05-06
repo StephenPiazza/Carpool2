@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DBController {
 	static ArrayList<String> array = new ArrayList<String>();
@@ -99,6 +100,65 @@ public class DBController {
 			e.printStackTrace();
 		}
 		return new Member();
+	}
+	
+	public static boolean updateMemberInfo(Member m) throws SQLException {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", dbUser, dbPassword);
+			statement = connection.createStatement();
+			statement.execute("UPDATE MEMBERS SET FirstName = '" + m.getFirstName() + "',"
+							+ "LastName ='"+ m.getLastName() + "',"
+							+ "PhoneNumber='" + m.getPhoneNumber() + "',"
+							+ "Email='" + m.getEmail() + "',"
+							+ "Password='" + m.getPassword() + "',"
+							+ "Address='" + m.getAddress() + "'"
+							+ "WHERE MemberID = '"+ m.getMemberID() +"')");
+			statement.close();
+			connection.close();
+			return true;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns all Rides that are scheduled for a given date.
+	 * @param date
+	 * @return
+	 * @throws SQLException
+	 */
+	public static ArrayList<Ride> getRidesByDate(Calendar date) throws SQLException {
+		ArrayList<Ride> rides = new ArrayList<Ride>();
+		String query = "SELECT * FROM Rides WHERE date = '"+date+"';";
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", dbUser, dbPassword);
+			preparedStatement = connection.prepareStatement(query);
+			ResultSet results = preparedStatement.executeQuery();
+			//Build Result Set into ArrayList of Rides
+			while (results.next()) {
+				String rideDate = results.getString("Date");
+				String startLocation = results.getString("StartLocation");
+				int startTime = results.getInt("StartTime");
+				String driver = results.getString("Driver");
+				ArrayList<String> passengers = new ArrayList<>();
+				ArrayList<String> stops = new ArrayList<>();
+				Ride ride = new Ride(date, startTime, startLocation, driver, passengers, stops);
+				rides.add(ride);
+			}
+			
+			
+		} catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return rides;
+		
+		
 	}
 
 }
