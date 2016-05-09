@@ -1,6 +1,6 @@
 
 public class ActiveState implements RideState {
-	private Ride ride;
+	protected Ride ride;
 	public ActiveState(Ride r) {
 		this.ride = r;
 	}
