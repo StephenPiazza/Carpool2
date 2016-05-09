@@ -2,7 +2,7 @@ import java.util.Calendar;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Ride {
+public class Ride implements RideInterface{
 
 	Calendar date;
 	int startTime;
