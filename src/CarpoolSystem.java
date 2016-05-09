@@ -1,11 +1,12 @@
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 
 public class CarpoolSystem {
 
 	private static Scanner scanner = new Scanner(System.in);
 	private static String loggedInID;
-	
+
 	public static void main(String[] args) {
 
 		boolean exit = false;
@@ -31,7 +32,7 @@ public class CarpoolSystem {
 			}
 		}
 	}
-	
+
 	/**
 	 * Login Menu with authentication
 	 */
@@ -43,8 +44,8 @@ public class CarpoolSystem {
 		System.out.println("Enter Password: ");
 		password = scanner.next();
 		try {
-			String tempID = DBController.authenticate(email,  password);
-			if (!tempID.equalsIgnoreCase("invalid")) {	
+			String tempID = DBController.authenticate(email, password);
+			if (!tempID.equalsIgnoreCase("invalid")) {
 				loggedInID = tempID;
 				mainMenu();
 			} else {
@@ -54,14 +55,14 @@ public class CarpoolSystem {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	/** 
+	/**
 	 * Screen for registering new members
 	 */
 	public static void register() {
 		Member newMember;
+		String memberID;
 		String firstName;
 		String lastName;
 		String phoneNumber;
@@ -86,13 +87,14 @@ public class CarpoolSystem {
 		System.out.println("Are you registering as a Driver? [Y/N]");
 		driver = scanner.next();
 
+		memberID = lastName + phoneNumber.substring(phoneNumber.length() - 4, phoneNumber.length());
 		if (driver.equalsIgnoreCase("y")) {
 			System.out.println("How many passengers can your vehicle hold?");
 			vehicleCapacity = scanner.nextInt();
 			Vehicle vehicle = new Vehicle(vehicleCapacity);
-			newMember = new Driver(firstName, lastName, phoneNumber, email, address, password, vehicle);
+			newMember = new Driver(memberID, firstName, lastName, phoneNumber, email, address, password, vehicle);
 		} else {
-			newMember = new Passenger(firstName, lastName, phoneNumber, email, address, password);
+			newMember = new Passenger(memberID, firstName, lastName, phoneNumber, email, address, password);
 		}
 
 		try {
@@ -109,7 +111,7 @@ public class CarpoolSystem {
 	/**
 	 * Main Menu once logged in
 	 */
-	public static void mainMenu() {
+	public static void mainMenu() throws SQLException {
 		boolean exit = false;
 		while (!exit) {
 			System.out.println("SJSU Carpool Main Menu");
@@ -125,6 +127,7 @@ public class CarpoolSystem {
 				editProfile();
 				break;
 			case 2:
+				editSchedule();
 				break;
 			case 3:
 				break;
@@ -140,12 +143,39 @@ public class CarpoolSystem {
 			}
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Edit existing member info
 	 */
-	public static void editProfile(){
-		
+	public static void editProfile() {
+
 	}
-	
+
+	/**
+	 * Edit existing member schedule
+	 */
+	public static void editSchedule() throws SQLException {
+
+		Boolean exit = false;
+		Member m = DBController.getMemberInfo(loggedInID);
+		while (!exit) {
+			System.out.println("Current Schedule:");
+			System.out.println(m.getSchedule().printSchedule());
+			System.out.println("What day would you like to edit?");
+			int response = scanner.nextInt();
+			System.out.println("What time will you leave to Campus [HH:MM]? (15 minute intervals)");
+			String to = scanner.next();
+			System.out.println("What time will you leave from Campus[HH:MM]? (15 minute intervals)");
+			String from = scanner.next();
+			System.out.println(to);
+			System.out.println(from);
+			m.getSchedule().setScheduleTime(response-1, to, from);
+			System.out.println("Would you like to edit any other days? [Y/N]");
+			if (scanner.next().equalsIgnoreCase("N")) {
+				exit = true;
+			}
+		}
+		DBController.updateMemberSchedule(m);
+	}
+
 }

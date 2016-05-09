@@ -1,4 +1,5 @@
 import java.util.Calendar;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Ride {
@@ -6,16 +7,16 @@ public class Ride {
 	Calendar date;
 	int startTime;
 	String startLocation;
-	Driver driver;
+	String driverID;
 	ArrayList<String> passengers;
 	ArrayList<String> stops;
 	RideState state;
 	
-	public Ride(Calendar date, int startTime, String startLocation, Driver driver, ArrayList<String> passengers, ArrayList<String> stops){
+	public Ride(Calendar date, int startTime, String startLocation, String driverID, ArrayList<String> passengers, ArrayList<String> stops){
 		this.date = date;
 		this.startTime = startTime;
 		this.startLocation = startLocation;
-		this.driver = driver;
+		this.driverID = driverID;
 		this.passengers = passengers;
 		this.stops = stops;
 	}
@@ -40,16 +41,17 @@ public class Ride {
 		this.startLocation = startLocation;
 	}
 
-	public Member getDriver() {
-		return driver;
+	public String getDriverID() {
+		return driverID;
 	}
 
 	public ArrayList<String> getPassengers() {
 		return passengers;
 	}
 
-	public boolean addPassenger(Member m) {
-		if (passengers.size() < driver.getVehicle().getCapacity() && !passengers.contains(m.getMemberID())){
+	public boolean addPassenger(Member m) throws SQLException {
+		Driver d = (Driver) DBController.getMemberInfo(driverID);
+		if (passengers.size() < d.getVehicle().getCapacity() && !passengers.contains(m.getMemberID())){
 			passengers.add(m.getMemberID());
 			return true;
 		}

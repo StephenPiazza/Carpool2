@@ -114,5 +114,10 @@ public class Member {
 	public MemberSchedule getSchedule(){
 		return schedule;
 	}
+	
+	public void setSchedule(MemberSchedule schedule) {
+		this.schedule = schedule;
+		
+	}
 
 }
