@@ -5,5 +5,7 @@ public class CompleteState implements RideState {
 	public void getInfo(){
 		
 	}
-
+	public void progressState() {
+		
+	}
 }
