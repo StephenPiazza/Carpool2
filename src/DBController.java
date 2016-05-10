@@ -185,9 +185,10 @@ public class DBController {
 		String[] dayOfWeek = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 		ArrayList<Member> passengers = new ArrayList<>();
 		int day = date.get(Calendar.DAY_OF_WEEK) -1;
-		String query = "SELECT  t1.memberId, firstname, lastName " + "FROM Members t1, MemberSchedules t2 "
-				+ "WHERE driver = 0 " + "AND " + dayOfWeek[day] + "To = '"
-				+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "' " + "OR " + dayOfWeek[day]
+		String query = "SELECT  t1.memberId, firstname, lastName " 
+				+ "FROM Members t1, MemberSchedules t2 "
+				+ "WHERE driver = 0 " 
+				+ "AND " + dayOfWeek[day] + "To = '"+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "' " + "OR " + dayOfWeek[day]
 				+ "From = '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "'";
 		String memberID;
 		String firstName;

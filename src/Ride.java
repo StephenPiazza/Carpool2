@@ -30,6 +30,7 @@ public class Ride {
 	public String getStartTime() {
 		Date tempDate = date.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		System.out.println(sdf.format(tempDate));
 		return sdf.format(tempDate);
 	}
 

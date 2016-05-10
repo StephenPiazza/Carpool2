@@ -10,6 +10,7 @@ public class DriverScheduling implements ScheduleStrategy {
 	
 	@Override
 	public void schedule(Member m, Calendar date) throws SQLException, ParseException {
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		Boolean exit = false;
 		String[] days = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
@@ -25,29 +26,35 @@ public class DriverScheduling implements ScheduleStrategy {
 			int selection = Integer.parseInt(response);
 			
 			switch(selection) {
+			
 			case 1:
 				MemberSchedule ms = m.getSchedule();
 				date = Calendar.getInstance();
 				
 				for (int i = date.get(Calendar.DAY_OF_WEEK)-1; i < 7; i++ ) {
+					
 					if (ms.getScheduleTime(i, 0) != null) {
-						date.set(Calendar.HOUR, Integer.parseInt(ms.getScheduleTime(i, 0).substring(0,2)));
+						System.out.println(Integer.parseInt(ms.getScheduleTime(i, 0).substring(0,2)));
+						date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ms.getScheduleTime(i, 0).substring(0,2)));
 						date.set(Calendar.MINUTE, Integer.parseInt(ms.getScheduleTime(i,  0).substring(3,5)));
 						date.set(Calendar.SECOND, 0);
 						r = new Ride(-1, date, m.getAddress(), m.getMemberID(), null, null);
 						DBController.createRide(r);
 					}
+					
 					if (ms.getScheduleTime(i, 1) != null) {
-						date.set(Calendar.HOUR, Integer.parseInt(ms.getScheduleTime(i, 1).substring(0,2)));
+						date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ms.getScheduleTime(i, 1).substring(0,2)));
 						date.set(Calendar.MINUTE, Integer.parseInt(ms.getScheduleTime(i,  1).substring(3,5)));
 						date.set(Calendar.SECOND, 0);
 						r = new Ride(-1, date, "SJSU University", m.getMemberID(), null, null);
 						DBController.createRide(r);
 					}
+					
 					date.add(Calendar.DATE, 1);
 				}
 				
 				break;
+			
 			case 2:
 				System.out.println("Ride Creation");
 
@@ -61,6 +68,7 @@ public class DriverScheduling implements ScheduleStrategy {
 				r = new Ride(-1, date, startLocation, m.getMemberID(), null, null);
 				DBController.createRide(r);
 				break;
+			
 			case 3:
 				ArrayList<Ride> rides = DBController.getRidesByMember(m);
 				
@@ -81,7 +89,7 @@ public class DriverScheduling implements ScheduleStrategy {
 				int selection2 = Integer.parseInt(response);
 				rides.get(selection-1).addPassenger(passengers.get(selection2-1));
 				DBController.updateRide(rides.get(selection-1));
-				scanner.close();
+
 				break;
 			case 4:
 				exit = true;
