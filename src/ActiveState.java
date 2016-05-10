@@ -12,6 +12,6 @@ public class ActiveState implements RideState {
 	public void getInfo() {
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd-hh-mm");
 		String formatted = format1.format(ride.getDate());
-		System.out.println(ride.getStartTime() + " "+ formatted + " " + ride.getStartLocation() + " " + ride.getDriver() + " " + ride.getRideState());
+		System.out.println(ride.getStartTime() + " "+ formatted + " " + ride.getStartLocation() + " " + ride.getDriverID() + " " + ride.getRideState());
 	}
 }
