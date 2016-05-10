@@ -5,7 +5,6 @@ public class RidePayment extends Payment {
 
 	public RidePayment(PaymentMethods pm) {
 		super(pm);
-		// TODO Auto-generated constructor stub
 
 	}
 

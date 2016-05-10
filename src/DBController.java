@@ -73,6 +73,7 @@ public class DBController {
 						+ "','" + m.getAddress() + "', 0);");
 			}
 			statement.execute("INSERT INTO MemberSchedules (memberID) VALUES('" + m.getMemberID() + "');");
+			statement.execute("INSERT INTO Member_balance (memberID, cc, point, cash) VALUES('" + m.getMemberID() + "', 50, 1000, 50);");
 			statement.close();
 			connection.close();
 			return true;
@@ -375,12 +376,18 @@ public class DBController {
 		// Set Passenger list as Comma Separated Value
 		String passengerCSV = "";
 		for (int i = 0; i < r.getPassengers().size(); i++) {
-			passengerCSV += r.getPassengers().get(i) + ",";
+			if (i != r.getPassengers().size()-1){
+			passengerCSV += r.getPassengers().get(i) + ";";
+			}
+			else {
+				passengerCSV += r.getPassengers().get(i);
+			}
 		}
 
 		// Set stop list as Colon Separated Value
 		String stopCSV = "";
 		for (int i = 0; i < r.getStops().size(); i++) {
+			
 			stopCSV += r.getStops().get(i) + ",";
 		}
 

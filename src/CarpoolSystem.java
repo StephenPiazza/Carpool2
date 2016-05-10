@@ -251,7 +251,41 @@ public class CarpoolSystem {
 			if (response.equalsIgnoreCase("y")){
 				r.getRideState().progressState();
 				DBController.updateRide(r);
+				if (r.getRideState() instanceof CompleteState) {
+					rewardScreen(r);
+				}
 			}
+		}
+	}
+	
+	public static void rewardScreen(Ride r) {
+		System.out.println("Payment menu");
+		for (int i =0; i < r.getPassengers().size(); i++) {
+			System.out.println("How would " + r.getPassengers().get(i) + " like to pay?");
+			System.out.println("[1] Cash ($5)");
+			System.out.println("[2] Credit ($5)");
+			System.out.println("[3] Points (100)");
+			System.out.println("[4] Cancel Payment");
+			String response = scanner.nextLine();
+			int selection = Integer.parseInt(response);
+			Payment p = new RidePayment(new Cash(r.getDriverID(), r.getPassengers().get(i), 5));
+			switch (selection){
+			case 1:
+				p = new RidePayment(new Cash(r.getDriverID(),r.getPassengers().get(i), 5));
+				break;
+			case 2: 
+				p = new RidePayment(new CreditCard(r.getDriverID(),r.getPassengers().get(i), 5));
+				break;
+			case 3: 
+				p = new RidePayment(new Points(r.getDriverID(),r.getPassengers().get(i), 100));
+				break;
+			case 4:
+				continue;
+			default:
+				break;
+			}
+			p.pay();
+			
 		}
 	}
 
