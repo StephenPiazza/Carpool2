@@ -2,6 +2,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
@@ -13,7 +14,7 @@ public class CarpoolSystem {
 	private static Scanner scanner = new Scanner(System.in);
 	private static String loggedInID;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException{
 
 		boolean exit = false;
 		String response = "";
@@ -43,7 +44,7 @@ public class CarpoolSystem {
 	/**
 	 * Login Menu with authentication
 	 */
-	public static void login() {
+	public static void login() throws ParseException {
 		String email;
 		String password;
 		System.out.println("Enter Email: ");
@@ -67,7 +68,7 @@ public class CarpoolSystem {
 	/**
 	 * Screen for registering new members
 	 */
-	public static void register() {
+	public static void register() throws ParseException {
 		Member newMember;
 		String memberID;
 		String firstName;
@@ -110,7 +111,6 @@ public class CarpoolSystem {
 			loggedInID = newMember.getMemberID();
 			mainMenu();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -118,8 +118,9 @@ public class CarpoolSystem {
 
 	/**
 	 * Main Menu once logged in
+	 * @throws ParseException 
 	 */
-	public static void mainMenu() throws SQLException {
+	public static void mainMenu() throws SQLException, ParseException {
 		boolean exit = false;
 		while (!exit) {
 			System.out.println("SJSU Carpool Main Menu");
@@ -142,6 +143,7 @@ public class CarpoolSystem {
 				scheduleRide();
 				break;
 			case 4:
+				viewRides();
 				break;
 			case 5:
 				break;
@@ -207,14 +209,14 @@ public class CarpoolSystem {
 	}
 
 	public static void scheduleRide() throws SQLException {
-//		System.out.println("Enter Date to schedule Ride [yyyy-MM-dd HH:mm:ss]:");
-//		String dateString = scanner.nextLine();
-//	
+		// System.out.println("Enter Date to schedule Ride [yyyy-MM-dd HH:mm:ss]:");
+		// String dateString = scanner.nextLine();
+		//
 		try {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar cal = Calendar.getInstance();
-//			cal.setTime(sdf.parse(dateString));
-//			System.out.println(cal.getTime().toGMTString());
+			// cal.setTime(sdf.parse(dateString));
+			// System.out.println(cal.getTime().toGMTString());
 			RideScheduler rs = new RideScheduler(cal);
 			rs.schedule(DBController.getMemberInfo(loggedInID));
 		} catch (ParseException e) {
@@ -223,10 +225,34 @@ public class CarpoolSystem {
 
 	}
 
-	public static void viewRides() {
-
+	public static void viewRides() throws SQLException, ParseException {
+		Member m = DBController.getMemberInfo(loggedInID);
+		ArrayList<Ride> rides = DBController.getRidesByMember(m);
+		int selection = 0;
+		String response = "";
+		System.out.println("Select Ride to view info");
+		for (int i=0; i < rides.size(); i++) {
+			System.out.println(String.format("["+(i+1)+"] %s %s", rides.get(i).getStartTime(), rides.get(i).getStartLocation()));
+		}
+		
+		System.out.println("What ride would you like to view?");
+		response = scanner.nextLine();
+		selection = Integer.parseInt(response);
+		Ride r = rides.get(selection-1);
+	
+		System.out.println("Ride Info");
+		System.out.println(String.format("%-15s %20s","Driver ID:", r.getDriverID()));
+		System.out.println(String.format("%-15s %20s", "Start Time:", r.getStartTime()));
+		System.out.println(String.format("%-15s %20s", "Start Location:", r.getStartLocation()));
+		System.out.println(String.format("Ride Status: %20s", r.getRideState().getInfo()));
+		if (m instanceof Driver) {
+			System.out.println("Would you like to progress ride status? [Y/N]");
+			response = scanner.nextLine();
+			if (response.equalsIgnoreCase("y")){
+				r.getRideState().progressState();
+				DBController.updateRide(r);
+			}
+		}
 	}
 
 }
-
-

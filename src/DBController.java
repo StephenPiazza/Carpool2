@@ -14,7 +14,7 @@ public class DBController {
 	private static PreparedStatement preparedStatement = null;
 	private static String connectionString = "jdbc:mysql://localhost:3306/carpool";
 	private static String dbUser = "root";
-	private static String dbPassword = "manju123";
+	private static String dbPassword = "password";
 
 	/**
 	 * Authenticate member credentials against database table.
@@ -248,6 +248,20 @@ public class DBController {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(formatter.parse(startTime));
 				Ride ride = new Ride(rideID, calendar, startLocation, driverID, passengers, stops);
+				int state = results.getInt("State");
+
+				RideState rs = new WaitingState(ride);
+				
+				if (state == 2) {
+					rs = new CompleteState(ride);
+				} else if (state == 1) {
+					rs = new ActiveState(ride);
+				} else if (state == 0) {
+					rs = new WaitingState(ride);
+				}
+				ride.setRideState(rs);
+
+				
 				rides.add(ride);
 			}
 			results.close();
@@ -287,28 +301,27 @@ public class DBController {
 			while (results.next()) {
 				int rideID = results.getInt("RideID");
 				String startLocation = results.getString("StartLocation");
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-				int startTime = results.getInt("StartTime");
-				String driver = results.getString("Driver");
-				ArrayList<String> passengers = new ArrayList<>();
-				ArrayList<String> stops = new ArrayList<>();
-				//Ride ride = new Ride(date, startTime, startLocation, driver, passengers, stops);
-=======
->>>>>>> Stashed changes
 				String startTime = results.getString("StartTime");
 				String driverID = results.getString("DriverID");
 				ArrayList<String> passengers = parseCSV(results.getString("Passengers"));
 				ArrayList<String> stops = parseCSV(results.getString("Stops"));
+				int state = results.getInt("State");
+
 
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(formatter.parse(startTime));
 				Ride ride = new Ride(rideID, calendar, startLocation, driverID, passengers, stops);
-<<<<<<< Updated upstream
-=======
->>>>>>> origin/master
->>>>>>> Stashed changes
+				RideState rs = new WaitingState(ride);
+				
+				if (state == 2) {
+					rs = new CompleteState(ride);
+				} else if (state == 1) {
+					rs = new ActiveState(ride);
+				} else if (state == 0) {
+					rs = new WaitingState(ride);
+				}
+				ride.setRideState(rs);
+
 				rides.add(ride);
 			}
 			results.close();
@@ -372,7 +385,7 @@ public class DBController {
 		}
 
 		String query = "UPDATE Rides SET Passengers = '" + passengerCSV + "', Stops = '" + stopCSV + "', state = "
-				+ stateInt + ";";
+				+ stateInt + " WHERE RideID = "+ r.getRideID()+";";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(connectionString, dbUser, dbPassword);

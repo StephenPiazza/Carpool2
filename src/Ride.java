@@ -23,6 +23,10 @@ public class Ride {
 		this.stops = stops;
 	}
 
+	public int getRideID() {
+		return rideID;
+	}
+	
 	public Calendar getDate() {
 		return date;
 	}
@@ -30,7 +34,7 @@ public class Ride {
 	public String getStartTime() {
 		Date tempDate = date.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		System.out.println(sdf.format(tempDate));
+		//System.out.println(sdf.format(tempDate));
 		return sdf.format(tempDate);
 	}
 
