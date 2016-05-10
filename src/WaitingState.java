@@ -14,4 +14,12 @@ public class WaitingState implements RideState {
 	public void progressState() {
 		ride.setRideState(new ActiveState(ride));
 	}
+<<<<<<< Updated upstream
+=======
+	@Override
+	public void getInfo(){
+	
+	}
+
+>>>>>>> Stashed changes
 }

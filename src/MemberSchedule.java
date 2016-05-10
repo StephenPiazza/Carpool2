@@ -1,3 +1,4 @@
+import java.util.Formatter;
 
 public class MemberSchedule {
 
@@ -24,7 +25,7 @@ public class MemberSchedule {
 	public String printSchedule() {
 		String print = "";
 		for(int i = 0; i < 7; i++) {
-			print += "["+(i+1)+"]"+ days[i] + " : To Campus:" + schedule[i][0] + "\tFrom Campus" + schedule[i][1] + "\n";
+			print += String.format("["+(i+1)+"] %10s: To Campus: %10s \tFrom Campus: %10s \n", days[i], schedule[i][0], schedule[i][1]);
 		}
 		return print;
 	}

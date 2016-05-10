@@ -1,20 +1,22 @@
 import java.util.Calendar;
+import java.util.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class Ride implements RideInterface{
+public class Ride {
 
+	int rideID;
 	Calendar date;
-	int startTime;
 	String startLocation;
 	String driverID;
 	ArrayList<String> passengers;
 	ArrayList<String> stops;
 	RideState state;
 	
-	public Ride(Calendar date, int startTime, String startLocation, String driverID, ArrayList<String> passengers, ArrayList<String> stops){
+	public Ride(int rideID, Calendar date, String startLocation, String driverID, ArrayList<String> passengers, ArrayList<String> stops){
+		this.rideID = rideID;
 		this.date = date;
-		this.startTime = startTime;
 		this.startLocation = startLocation;
 		this.driverID = driverID;
 		this.passengers = passengers;
@@ -25,12 +27,14 @@ public class Ride implements RideInterface{
 		return date;
 	}
 
-	public int getStartTime() {
-		return startTime;
+	public String getStartTime() {
+		Date tempDate = date.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		return sdf.format(tempDate);
 	}
 
-	public void setStartTime(int startTime) {
-		this.startTime = startTime;
+	public void setStartTime(long time) {
+		this.date.setTime(new Date(time));
 	}
 
 	public String getStartLocation() {
@@ -88,5 +92,5 @@ public class Ride implements RideInterface{
 	public void setRideState(RideState state) {
 		this.state = state;
 	}
-	
+
 }

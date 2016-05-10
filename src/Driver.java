@@ -3,8 +3,8 @@ public class Driver extends Member {
 	
 	Vehicle vehicle;
 	
-	public Driver(String memberID, String firstName, String lastName, String phoneNumber, String email, String address, String password, Vehicle vehicle){
-		super(memberID, firstName, lastName, phoneNumber, email, address, password);
+	public Driver(String memberID, String firstName, String lastName, String phoneNumber, String address, String email,  String password, Vehicle vehicle){
+		super(memberID, firstName, lastName, phoneNumber, address, email, password);
 		this.vehicle = vehicle;
 	}
 	

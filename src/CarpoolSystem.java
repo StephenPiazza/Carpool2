@@ -1,6 +1,12 @@
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+
+import sun.security.jca.GetInstance;
 
 public class CarpoolSystem {
 
@@ -10,14 +16,15 @@ public class CarpoolSystem {
 	public static void main(String[] args) {
 
 		boolean exit = false;
-		int response = 0;
+		String response = "";
 		while (!exit) {
 			System.out.println("Welcome to SJSU Carpool");
 			System.out.println("[1] Login");
 			System.out.println("[2] Register");
 			System.out.println("[3] Exit");
-			response = scanner.nextInt();
-			switch (response) {
+			response = scanner.nextLine();
+			int selection = Integer.parseInt(response);
+			switch (selection) {
 			case 1:
 				login();
 				break;
@@ -40,9 +47,9 @@ public class CarpoolSystem {
 		String email;
 		String password;
 		System.out.println("Enter Email: ");
-		email = scanner.next();
+		email = scanner.nextLine();
 		System.out.println("Enter Password: ");
-		password = scanner.next();
+		password = scanner.nextLine();
 		try {
 			String tempID = DBController.authenticate(email, password);
 			if (!tempID.equalsIgnoreCase("invalid")) {
@@ -73,28 +80,29 @@ public class CarpoolSystem {
 		int vehicleCapacity = 0;
 
 		System.out.println("Enter First Name:");
-		firstName = scanner.next();
+		firstName = scanner.nextLine();
 		System.out.println("Enter Last Name:");
-		lastName = scanner.next();
+		lastName = scanner.nextLine();
 		System.out.println("Enter Phone Number:");
-		phoneNumber = scanner.next();
+		phoneNumber = scanner.nextLine();
 		System.out.println("Enter Address:");
-		address = scanner.next();
+		address = scanner.nextLine();
 		System.out.println("Enter Email:");
-		email = scanner.next();
+		email = scanner.nextLine();
 		System.out.println("Enter Password");
-		password = scanner.next();
+		password = scanner.nextLine();
 		System.out.println("Are you registering as a Driver? [Y/N]");
-		driver = scanner.next();
+		driver = scanner.nextLine();
 
 		memberID = lastName + phoneNumber.substring(phoneNumber.length() - 4, phoneNumber.length());
 		if (driver.equalsIgnoreCase("y")) {
 			System.out.println("How many passengers can your vehicle hold?");
-			vehicleCapacity = scanner.nextInt();
+			String response = scanner.nextLine();
+			vehicleCapacity = Integer.parseInt(response);
 			Vehicle vehicle = new Vehicle(vehicleCapacity);
-			newMember = new Driver(memberID, firstName, lastName, phoneNumber, email, address, password, vehicle);
+			newMember = new Driver(memberID, firstName, lastName, phoneNumber, address, email, password, vehicle);
 		} else {
-			newMember = new Passenger(memberID, firstName, lastName, phoneNumber, email, address, password);
+			newMember = new Passenger(memberID, firstName, lastName, phoneNumber, address, email, password);
 		}
 
 		try {
@@ -121,8 +129,9 @@ public class CarpoolSystem {
 			System.out.println("[4] View Rides");
 			System.out.println("[5] View Notifications");
 			System.out.println("[6] Exit");
-			int response = scanner.nextInt();
-			switch (response) {
+			String response = scanner.nextLine();
+			int selection = Integer.parseInt(response);
+			switch (selection) {
 			case 1:
 				editProfile();
 				break;
@@ -130,6 +139,7 @@ public class CarpoolSystem {
 				editSchedule();
 				break;
 			case 3:
+				scheduleRide();
 				break;
 			case 4:
 				break;
@@ -147,7 +157,24 @@ public class CarpoolSystem {
 	/**
 	 * Edit existing member info
 	 */
-	public static void editProfile() {
+	public static void editProfile() throws SQLException {
+
+		Member m = DBController.getMemberInfo(loggedInID);
+
+		System.out.println("Enter First Name: ");
+		m.setFirstName(scanner.nextLine());
+		System.out.println("Enter Last Name: ");
+		m.setLastName(scanner.nextLine());
+		System.out.println("Enter PhoneNumber: ");
+		m.setPhoneNumber(scanner.nextLine());
+		System.out.println("Enter Email: ");
+		m.setEmail(scanner.nextLine());
+		System.out.println("Enter Password: ");
+		m.setPassword(scanner.nextLine());
+
+		if (DBController.updateMemberInfo(m)) {
+			System.out.println("Update Unsuccesful!");
+		}
 
 	}
 
@@ -162,20 +189,42 @@ public class CarpoolSystem {
 			System.out.println("Current Schedule:");
 			System.out.println(m.getSchedule().printSchedule());
 			System.out.println("What day would you like to edit?");
-			int response = scanner.nextInt();
+			String response = scanner.nextLine();
+			int selection = Integer.parseInt(response);
 			System.out.println("What time will you leave to Campus [HH:MM]? (15 minute intervals)");
-			String to = scanner.next();
+			String to = scanner.nextLine();
 			System.out.println("What time will you leave from Campus[HH:MM]? (15 minute intervals)");
-			String from = scanner.next();
+			String from = scanner.nextLine();
 			System.out.println(to);
 			System.out.println(from);
-			m.getSchedule().setScheduleTime(response-1, to, from);
+			m.getSchedule().setScheduleTime(selection - 1, to, from);
 			System.out.println("Would you like to edit any other days? [Y/N]");
-			if (scanner.next().equalsIgnoreCase("N")) {
+			if (scanner.nextLine().equalsIgnoreCase("N")) {
 				exit = true;
 			}
 		}
 		DBController.updateMemberSchedule(m);
+	}
+
+	public static void scheduleRide() throws SQLException {
+//		System.out.println("Enter Date to schedule Ride [yyyy-MM-dd HH:mm:ss]:");
+//		String dateString = scanner.nextLine();
+//	
+		try {
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Calendar cal = Calendar.getInstance();
+//			cal.setTime(sdf.parse(dateString));
+//			System.out.println(cal.getTime().toGMTString());
+			RideScheduler rs = new RideScheduler(cal);
+			rs.schedule(DBController.getMemberInfo(loggedInID));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void viewRides() {
+
 	}
 
 }

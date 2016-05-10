@@ -1,6 +1,7 @@
 
 public interface RideState {
 	
-	public void getInfo();
 	public void progressState();
+	public void getInfo();
+
 }

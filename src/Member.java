@@ -31,7 +31,7 @@ public class Member {
 	 * @param address
 	 * @param password
 	 */
-	public Member(String memberID, String firstName, String lastName, String phoneNumber, String email, String address, String password) {
+	public Member(String memberID, String firstName, String lastName, String phoneNumber, String address, String email,  String password) {
 		this.memberID = memberID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -49,7 +49,7 @@ public class Member {
 	 * @param address
 	 * @param password
 	 */
-	public Member(String firstName, String lastName, String phoneNumber, String email, String address, String password) {
+	public Member(String firstName, String lastName, String phoneNumber, String address, String email, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
