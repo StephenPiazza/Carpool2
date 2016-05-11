@@ -30,7 +30,7 @@ public class Cash implements PaymentMethods {
         try
         {
           Class.forName("com.mysql.jdbc.Driver");
-          connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", "root", "manju123");  
+          connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", "root", "password");  
           stmt = connection.createStatement();
           stmt2 = connection.createStatement();
           stmt3 = connection.createStatement();

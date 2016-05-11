@@ -21,13 +21,18 @@ public class PassengerScheduling implements ScheduleStrategy{
 		ArrayList<Ride> rides = DBController.getRidesByDate(date);
 		
 		System.out.println("Select ride to become a passenger of: ");
-		for(int i = 0; i < rides.size(); i++) {
-			System.out.println(String.format("["+(i+1)+"] %10s %10s %10s", rides.get(i).getDriverID(), rides.get(i).getStartTime(), rides.get(i).getStartLocation()));
+		if (rides.size() > 0) {
+			for(int i = 0; i < rides.size(); i++) {
+				System.out.println(String.format("["+(i+1)+"] %10s %10s %10s", rides.get(i).getDriverID(), rides.get(i).getStartTime(), rides.get(i).getStartLocation()));
+			}
+			String response = scanner.nextLine();
+			int selection = Integer.parseInt(response);
+			rides.get(selection-1).addPassenger(m);
+			DBController.updateRide(rides.get(selection-1));
 		}
-		String response = scanner.nextLine();
-		int selection = Integer.parseInt(response);
-		rides.get(selection-1).addPassenger(m);
-		DBController.updateRide(rides.get(selection-1));
+		else {
+			System.out.println("No available rides");
+		}
 		scanner.close();
 	}
 

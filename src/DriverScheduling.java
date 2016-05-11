@@ -82,14 +82,18 @@ public class DriverScheduling implements ScheduleStrategy {
 				
 				ArrayList<Member> passengers = DBController.getPassengersByDate(rides.get(selection-1).getDate());
 				System.out.println("Select passenger to add: ");
-				for(int i = 0; i < passengers.size(); i++) {
-					System.out.println(String.format("["+(i+1)+"] MemberID: %10s  Name: %s %s", passengers.get(i).getMemberID(), passengers.get(i).getFirstName(), passengers.get(i).getLastName()));
+				if (passengers.size() > 0) {
+					for(int i = 0; i < passengers.size(); i++) {
+						System.out.println(String.format("["+(i+1)+"] MemberID: %10s  Name: %s %s", passengers.get(i).getMemberID(), passengers.get(i).getFirstName(), passengers.get(i).getLastName()));
+					}
+					response = scanner.nextLine();
+					int selection2 = Integer.parseInt(response);
+					rides.get(selection-1).addPassenger(passengers.get(selection2-1));
+					DBController.updateRide(rides.get(selection-1));
 				}
-				response = scanner.nextLine();
-				int selection2 = Integer.parseInt(response);
-				rides.get(selection-1).addPassenger(passengers.get(selection2-1));
-				DBController.updateRide(rides.get(selection-1));
-
+				else {
+					System.out.println("No Available Passengers");
+				}
 				break;
 			case 4:
 				exit = true;

@@ -30,7 +30,7 @@ public class CreditCard implements PaymentMethods {
         try
         {
           Class.forName("com.mysql.jdbc.Driver");
-          connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", "root", "manju123");  
+          connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carpool", "root", "password");  
           stmt = connection.createStatement();
           stmt2 = connection.createStatement();
           stmt3 = connection.createStatement();
@@ -56,8 +56,7 @@ public class CreditCard implements PaymentMethods {
         	    stmt2.close(); 
            }
           
-         
-          
+
         System.out.println("Payment successful");
         }
         catch (Exception e) {

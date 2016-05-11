@@ -187,10 +187,10 @@ public class DBController {
 		ArrayList<Member> passengers = new ArrayList<>();
 		int day = date.get(Calendar.DAY_OF_WEEK) -1;
 		String query = "SELECT  t1.memberId, firstname, lastName " 
-				+ "FROM Members t1, MemberSchedules t2 "
+				+ "FROM Members t1 INNER JOIN MemberSchedules t2 ON t1.MemberID = t2.MemberID "
 				+ "WHERE driver = 0 " 
-				+ "AND " + dayOfWeek[day] + "To = '"+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "' " + "OR " + dayOfWeek[day]
-				+ "From = '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "'";
+				+ "AND (" + dayOfWeek[day] + "To = '"+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "'" + " OR " + dayOfWeek[day]
+				+ "From = '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date.getTime()) + "')";
 		String memberID;
 		String firstName;
 		String lastName;
@@ -440,6 +440,21 @@ public class DBController {
 		}
 	}
 	
+	public static void updateParkingSpot(ParkingSpot ps) throws SQLException {
+		int occupied = (ps.isOccupied()) ? 1: 0;
+		String query = "UPDATE ParkingLot SET Occupied = " + occupied + " WHERE spotID = " + ps.getSpotID() + ";";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection(connectionString, dbUser, dbPassword);
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.execute();
+			preparedStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Format strings for database insertion
 	 * @param s
@@ -479,4 +494,5 @@ public class DBController {
 		}
 		return parsed;
 	}
+
 }
