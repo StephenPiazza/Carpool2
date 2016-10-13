@@ -440,6 +440,28 @@ public class DBController {
 		}
 	}
 	
+	public static ArrayList<ParkingSpot> getParkingLot() throws SQLException {
+		ArrayList<ParkingSpot> ps = new ArrayList<>();
+		String query ="SELECT * FROM ParkingLot";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection(connectionString, dbUser, dbPassword);
+			preparedStatement = connection.prepareStatement(query);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				int occupied = rs.getInt("Occupied");
+				Boolean occ = (occupied == 1) ? true : false;
+				ParkingSpot p = new ParkingSpot(rs.getInt("spotID"), occ);
+				ps.add(p);
+			}
+			preparedStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return ps;
+	}
+	
 	public static void updateParkingSpot(ParkingSpot ps) throws SQLException {
 		int occupied = (ps.isOccupied()) ? 1: 0;
 		String query = "UPDATE ParkingLot SET Occupied = " + occupied + " WHERE spotID = " + ps.getSpotID() + ";";

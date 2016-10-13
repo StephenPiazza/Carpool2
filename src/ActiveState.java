@@ -6,6 +6,7 @@ public class ActiveState implements RideState {
 	
 	public ActiveState(Ride r) {
 		this.ride = r;
+		
 	}
 	
 	public String getInfo() {

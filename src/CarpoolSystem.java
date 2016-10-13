@@ -251,6 +251,10 @@ public class CarpoolSystem {
 			if (response.equalsIgnoreCase("y")){
 				r.getRideState().progressState();
 				DBController.updateRide(r);
+				if (r.getRideState() instanceof ActiveState) {
+					ParkingLot pl = new ParkingLot(DBController.getParkingLot());
+					System.out.println("This is your Parking Spot when you Arrive:" + pl.getUnoccupiedSpot().getSpotID());
+				}
 				if (r.getRideState() instanceof CompleteState) {
 					rewardScreen(r);
 				}
